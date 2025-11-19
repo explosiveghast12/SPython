@@ -7,12 +7,15 @@ import math
 
 # Constants included in math module
 
+# Not adding transistors yet since I don't need that functionality right now
+
 # global variables
 inp = "" # input
 
-nets = {} # nets are stored in a dictionary by net name
-components = {} # component names and values, the value is a string and contains Ohms, Henries, Volts, Whatever.
+nets = {} # nets are stored in a dictionary by net name, this is a dictionary of arrays
+components = {} # component names and values, the value is a string and contains Ohms, Henries, Volts, Whatever other info is needed.
 undefined_pins = [] # list of pins that are unconnected, add when we add components
+equations = []
 
 supported_components = ["r", "i", "c", "v"]
 
@@ -50,13 +53,25 @@ def add_component():
         print("component value: ") # we know based on what they previously chose
         value = input()
         components[name] = value + unit #concatanates string, or at least it is supposed to
+        # This will be good enough for basic things, but if you add a voltage source we need to know more.
+        # which would be a different case for the component
+        # Also, here we need to add unused pins to the list
+        # Which we should support pin# instead of just +-
+        # Most will only have two pins
+        # 0 default is + 1 is -
+        undefined_pins.append(name + "-" + 0) # As you can see, we should update this to a for loop
+        undefined_pins.append(name + "-" + 1)
         println("component added") # in order to save me some time, they have to define the connections later
         # we also have to keep track of components and values
     
 
 def add_net():
     print("net name: ") # if users want to define nets manually
-    temp_net = input() # may need to add new dictionary net with netname
+    temp_net = input()
+
+    if not nets[temp_net]:
+        nets[temp_net] = [] # defines net to prevent errors
+    
     done = False
     while !done:
         # show current components which can be added to a net, which are just unconnected components
@@ -68,7 +83,7 @@ def add_net():
             done = True
         else:
             try:
-                nets[temp_net] = undefined_pins[inp]
+                nets[temp_net].append(undefined_pins[inp])
             except:
                 println("invalid input")
             
@@ -105,13 +120,39 @@ def is_operator(token):
     # Also, we should make a array with the tokens, then maybe we don't need this function
 
 def create_nodal():
+    system_of_equations = []
     # Current in = current out
     # For AC analysis convert all sources to their phasor equivalents
     # We will have an input, which names nets, and tells what is connected to said nets
     # example: (net1 <= v1+ r1+),(gnd <= r1- v1-)
     # as you can see, all components have a positive and negative terminal at least
     # this is so we can determine which side is connected to which net
-    # which will help when determining sign with 
+    # which will help when determining sign with
+    for i, net_name, p in enumerate(nets): # hopefully enumerate works with dictionaries
+        for pin in p:
+            system_of_equations[i] += component_equation(pin)
+
+def component_equation(component):
+    # this just connects functions to return equation to any component, so this function is general.
+    # I should check spice to see how they handle this stuff before I continue this way
+    # Because this does not seem better
+    # need to parse component (which is really just the pin in the net) first
+    # which should be given as componentName-pin#
+    parts = component.split("-")
+    comp_name = parts[0]
+    pin_num = parts[1]
+    comp_type = components[comp_name][-1] # last character in string of the components value is the unit, which tells how we treat this component
+    match comp_type:
+        case "r":
+            pass
+        case "i":
+            pass
+        case "c":
+            pass
+        case "v":
+            pass
+        case _:
+            pass
 
 def capacitor_impedence(C, w):
     return "1 jwC /"
