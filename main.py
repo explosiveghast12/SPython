@@ -7,9 +7,71 @@ import math
 
 # Constants included in math module
 
+# global variables
+inp = "" # input
+
+nets = {} # nets are stored in a dictionary by net name
+components = {} # component names and values, the value is a string and contains Ohms, Henries, Volts, Whatever.
+undefined_pins = [] # list of pins that are unconnected, add when we add components
+
+supported_components = ["r", "i", "c", "v"]
+
 def main():
     print("SPython interface:")
     # Unnecessary if using this as a library for other things
+
+# net/circuit functions
+
+def reset_circuit():
+    nets = {} # reset net dictionary
+
+def add_component():
+    unit = ""
+    print("component to add: ")
+    # print supported components?
+    for component in supported_components:
+        print(component)
+    inp = input()
+
+    if inp in supported_components: # we are checking because we need to skip this code otherwise
+        match inp:
+            case "r":
+                unit = "o" # trying to keep these to one character to make life easy
+            case "i":
+                unit = "h"
+            case "c":
+                unit = "f"
+            case "v":
+                unit = "v"
+            case _:
+                println("you should not be able to read this")
+        print("component name: ") # currently there is no function that allows you to change name later
+        name = input()
+        print("component value: ") # we know based on what they previously chose
+        value = input()
+        components[name] = value + unit #concatanates string, or at least it is supposed to
+        println("component added") # in order to save me some time, they have to define the connections later
+        # we also have to keep track of components and values
+    
+
+def add_net():
+    print("net name: ") # if users want to define nets manually
+    temp_net = input() # may need to add new dictionary net with netname
+    done = False
+    while !done:
+        # show current components which can be added to a net, which are just unconnected components
+        for i, undef in enumerate(undefined_pins):
+            println(f"{i}. {undef}")
+
+        inp = input()
+        if inp == "q":
+            done = True
+        else:
+            try:
+                nets[temp_net] = undefined_pins[inp]
+            except:
+                println("invalid input")
+            
 
 def run_rpn(expr):
     # RPN expression evaluator, intellisense made this, it appears to be taken from some other code
@@ -45,6 +107,11 @@ def is_operator(token):
 def create_nodal():
     # Current in = current out
     # For AC analysis convert all sources to their phasor equivalents
+    # We will have an input, which names nets, and tells what is connected to said nets
+    # example: (net1 <= v1+ r1+),(gnd <= r1- v1-)
+    # as you can see, all components have a positive and negative terminal at least
+    # this is so we can determine which side is connected to which net
+    # which will help when determining sign with 
 
 def capacitor_impedence(C, w):
     return "1 jwC /"
