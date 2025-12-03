@@ -20,8 +20,37 @@ equations = []
 supported_components = ["r", "i", "c", "v"]
 
 def main():
-    print("SPython interface:")
+    println("SPython interface:")
+    print("0 for help.")
+    i = input()
+    match i:
+        case "0":
+            help()
+        case "1":
+            add_component()
+        case "2"
+            add_net()
+        case "3"
+            pass
+        case "4"
+            pass
+        case "9"
+            # reset nodes and stuff
+            pass
+        case _:
+            println("Unrecognized command")
+        
     # Unnecessary if using this as a library for other things
+
+def help():
+    println("1. add component")
+    println("2. define nets")
+    println("3. run simulation")
+    println("9. reset")
+
+def analyze():
+    # get type/time
+    pass
 
 # net/circuit functions
 
@@ -166,6 +195,15 @@ def inductor_impedence(L, w):
 def evaluate_nodes():
     pass
 
+def transient():
+    pass
+
+def ac_analysis():
+    pass
+
+def dc_analysis():
+    pass
+
 # normal math
 
 def add(x, y):
@@ -193,9 +231,6 @@ def power(x, y):
     # if both numbers
     return x ** y
     # else return "x y ^"
-
-def factorial(x):
-    #idk
 
 # Math approximations
 
