@@ -28,13 +28,13 @@ def main():
             help()
         case "1":
             add_component()
-        case "2"
+        case "2":
             add_net()
-        case "3"
+        case "3":
             pass
-        case "4"
+        case "4":
             pass
-        case "9"
+        case "9":
             # reset nodes and stuff
             pass
         case _:
@@ -315,3 +315,5 @@ def mat_mult():
 
 def determinant():
     pass
+
+main()
